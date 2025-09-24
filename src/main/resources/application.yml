@@ -1,1 +1,7 @@
-spring.application.name: portholemap-api
+spring:
+  application:
+    name: portholemap-api
+
+management:
+  server:
+    port: 8081
