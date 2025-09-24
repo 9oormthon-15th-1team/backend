@@ -39,6 +39,13 @@ class PortholeController {
     }
 
     @Operation(summary = "포트홀 등록", description = "새로운 포트홀을 등록합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "생성 성공"),
+            ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            ApiResponse(responseCode = "500", description = "서버 오류")
+        ]
+    )
     @PostMapping
     fun createPothole(@RequestBody request: Map<String, Any>): ResponseEntity<String> {
         return ResponseEntity.ok("Pothole created successfully")
