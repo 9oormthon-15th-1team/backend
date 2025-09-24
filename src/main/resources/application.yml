@@ -1,6 +1,9 @@
 spring:
   application:
     name: portholemap-api
+  mvc:
+    servlet:
+      path: /api
 
 management:
   server:
