@@ -1,0 +1,32 @@
+# 빌드 관련 디렉토리 제외
+build/
+.gradle/
+
+# IDE 관련 파일 제외
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS 관련 파일 제외
+.DS_Store
+Thumbs.db
+
+# Git 관련 파일 제외
+.git/
+.gitignore
+
+# 로그 파일 제외
+*.log
+
+# 임시 파일 제외
+*.tmp
+*.bak
+
+# Docker 관련 파일 제외
+Dockerfile
+.dockerignore
+
+# 기타 불필요한 파일 제외
+README.md
+HELP.md
