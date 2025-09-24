@@ -25,6 +25,14 @@ class PortholeController {
     }
 
     @Operation(summary = "포트홀 상세 조회", description = "특정 포트홀의 상세 정보를 조회합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "조회 성공"),
+            ApiResponse(responseCode = "400", description = "잘못된 ID"),
+            ApiResponse(responseCode = "404", description = "포트홀을 찾을 수 없음"),
+            ApiResponse(responseCode = "500", description = "서버 오류")
+        ]
+    )
     @GetMapping("/{id}")
     fun getPothole(@PathVariable id: Long): ResponseEntity<String> {
         return ResponseEntity.ok("Pothole $id details")
