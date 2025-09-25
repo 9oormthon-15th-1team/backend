@@ -26,9 +26,6 @@ class ReportController(
 ) {
 
     @Operation(summary = "제보 목록 조회", description = "등록된 포트홀 제보 목록을 조회합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping
     fun getReports(): ApiResponse<List<ReportResponse>> {
         val reports = reportService.getAllReports()
@@ -36,10 +33,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 상세 조회", description = "특정 포트홀 제보의 상세 정보를 조회합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공"),
-        SwaggerApiResponse(responseCode = "404", description = "제보를 찾을 수 없음")
-    ])
     @GetMapping("/{id}")
     fun getReport(@PathVariable id: Long): ApiResponse<ReportResponse> {
         val report = reportService.getReportById(id)
@@ -47,10 +40,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 등록", description = "새로운 포트홀 제보를 등록합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "201", description = "생성됨"),
-        SwaggerApiResponse(responseCode = "400", description = "잘못된 요청")
-    ])
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createReport(@Valid @RequestBody request: CreateReportRequest): ApiResponse<ReportResponse> {
@@ -59,10 +48,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 수정", description = "기존 포트홀 제보 정보를 수정합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공"),
-        SwaggerApiResponse(responseCode = "404", description = "제보를 찾을 수 없음")
-    ])
     @PutMapping("/{id}")
     fun updateReport(
         @PathVariable id: Long,
@@ -73,10 +58,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 삭제", description = "포트홀 제보를 삭제합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공"),
-        SwaggerApiResponse(responseCode = "404", description = "제보를 찾을 수 없음")
-    ])
     @DeleteMapping("/{id}")
     fun deleteReport(@PathVariable id: Long): ApiResponse<Unit> {
         reportService.deleteReport(id)
@@ -84,9 +65,6 @@ class ReportController(
     }
 
     @Operation(summary = "위치 기반 제보 검색", description = "지정된 위도/경도 범위 내의 제보를 검색합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping("/search/location")
     fun searchReportsByLocation(
         @Parameter(description = "최소 위도", example = "37.5000")
@@ -105,9 +83,6 @@ class ReportController(
     }
 
     @Operation(summary = "주소 기반 제보 검색", description = "주소에 특정 키워드가 포함된 제보를 검색합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping("/search/address")
     fun searchReportsByAddress(
         @Parameter(description = "주소 검색 키워드", example = "서울")
@@ -118,9 +93,6 @@ class ReportController(
     }
 
     @Operation(summary = "설명 기반 제보 검색", description = "설명에 특정 키워드가 포함된 제보를 검색합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping("/search/description")
     fun searchReportsByDescription(
         @Parameter(description = "설명 검색 키워드", example = "큰 구멍")
@@ -131,9 +103,6 @@ class ReportController(
     }
 
     @Operation(summary = "최근 제보 조회", description = "최근 등록된 제보 10개를 조회합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping("/recent")
     fun getRecentReports(): ApiResponse<List<ReportResponse>> {
         val reports = reportService.getRecentReports()
@@ -141,9 +110,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 통계 조회", description = "전체 제보 개수를 조회합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "200", description = "성공")
-    ])
     @GetMapping("/stats")
     fun getReportStats(): ApiResponse<Map<String, Long>> {
         val totalCount = reportService.getTotalReportCount()
@@ -152,10 +118,6 @@ class ReportController(
     }
 
     @Operation(summary = "제보 등록 (파일 업로드)", description = "이미지 파일과 함께 새로운 포트홀 제보를 등록합니다.")
-    @ApiResponses(value = [
-        SwaggerApiResponse(responseCode = "201", description = "생성됨"),
-        SwaggerApiResponse(responseCode = "400", description = "잘못된 요청")
-    ])
     @PostMapping("/with-files", consumes = ["multipart/form-data"])
     @ResponseStatus(HttpStatus.CREATED)
     fun createReportWithFiles(
