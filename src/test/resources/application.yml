@@ -1,0 +1,22 @@
+# 파일 업로드 설정 (S3 사용)
+app:
+  s3:
+    bucket-name: aws-bucket-name
+    region: ap-northeast-2
+    access-key: aws-access-key
+    secret-key: aws-secret-key
+
+# AWS 설정
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+# 네이버 지오코딩 API 설정
+naver:
+  geocoding:
+    client-id: naver-client-id
+    client-secret: naver-client-secret
+    url: https://maps.apigw.ntruss.com/map-reversegeocode/v2/gc

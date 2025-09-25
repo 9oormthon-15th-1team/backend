@@ -48,6 +48,18 @@ class PotholeService(
     }
 
     /**
+     * 기준 좌표에서 지정된 반경 내의 포트홀 검색 (거리순 정렬)
+     */
+    fun getPotholesWithinRadius(
+        latitude: Double,
+        longitude: Double,
+        radiusInMeters: Double
+    ): List<PotholeResponse> {
+        return potholeRepository.findPotholesWithinRadius(latitude, longitude, radiusInMeters)
+            .map { PotholeResponse.from(it) }
+    }
+
+    /**
      * 키워드로 포트홀 검색
      */
     fun searchPotholesByKeyword(keyword: String): List<PotholeResponse> {
