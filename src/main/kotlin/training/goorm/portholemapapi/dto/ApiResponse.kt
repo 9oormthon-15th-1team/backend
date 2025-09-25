@@ -16,10 +16,29 @@ data class ApiResponse<T>(
     val data: T? = null,
 ) {
     companion object {
-        fun <T> success(data: T? = null, message: String? = null): ApiResponse<T> {
+        // 데이터만 있는 성공 응답 (기본 메시지 "성공" 사용)
+        fun <T> success(data: T): ApiResponse<T> {
             return ApiResponse(
                 code = ResultCode.SUCCESS,
-                message = message ?: ResultCode.SUCCESS.message,
+                message = ResultCode.SUCCESS.message,
+                data = data
+            )
+        }
+
+        // 메시지만 있는 성공 응답 (data는 null)
+        fun success(message: String = ResultCode.SUCCESS.message): ApiResponse<Nothing> {
+            return ApiResponse(
+                code = ResultCode.SUCCESS,
+                message = message,
+                data = null
+            )
+        }
+
+        // 데이터와 메시지가 모두 있는 성공 응답
+        fun <T> success(data: T, message: String): ApiResponse<T> {
+            return ApiResponse(
+                code = ResultCode.SUCCESS,
+                message = message,
                 data = data
             )
         }

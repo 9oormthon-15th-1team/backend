@@ -27,7 +27,7 @@ class PortholeController(
     @GetMapping
     fun getPotholes(): ApiResponse<List<PotholeResponse>> {
         val potholes = potholeService.getAllPotholes()
-        return ApiResponse.success(potholes, "포트홀 목록 조회 성공")
+        return ApiResponse.success(potholes)
     }
 
     @Operation(summary = "포트홀 상세 조회", description = "특정 포트홀의 상세 정보를 조회합니다.")
@@ -38,7 +38,7 @@ class PortholeController(
     @GetMapping("/{id}")
     fun getPothole(@PathVariable id: Long): ApiResponse<PotholeResponse> {
         val pothole = potholeService.getPotholeById(id)
-        return ApiResponse.success(pothole, "포트홀 상세 정보 조회 성공")
+        return ApiResponse.success(pothole)
     }
 
     @Operation(summary = "포트홀 등록", description = "새로운 포트홀을 등록합니다.")
@@ -50,7 +50,7 @@ class PortholeController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createPothole(@RequestBody request: CreatePotholeRequest): ApiResponse<PotholeResponse> {
         val createdPothole = potholeService.createPothole(request)
-        return ApiResponse.success(createdPothole, "포트홀 등록 성공")
+        return ApiResponse.success(createdPothole)
     }
 
     @Operation(summary = "포트홀 수정", description = "기존 포트홀 정보를 수정합니다.")
@@ -64,7 +64,7 @@ class PortholeController(
         @RequestBody request: UpdatePotholeRequest
     ): ApiResponse<PotholeResponse> {
         val updatedPothole = potholeService.updatePothole(id, request)
-        return ApiResponse.success(updatedPothole, "포트홀 수정 성공")
+        return ApiResponse.success(updatedPothole)
     }
 
     @Operation(summary = "포트홀 삭제", description = "포트홀을 삭제합니다.")
@@ -75,7 +75,7 @@ class PortholeController(
     @DeleteMapping("/{id}")
     fun deletePothole(@PathVariable id: Long): ApiResponse<Void> {
         potholeService.deletePothole(id)
-        return ApiResponse.success(message = "포트홀 삭제 성공")
+        return ApiResponse.success()
     }
 
     @Operation(summary = "위치 기반 포트홀 검색", description = "지정된 위도/경도 범위 내의 포트홀을 검색합니다.")
@@ -96,7 +96,7 @@ class PortholeController(
         val potholes = potholeService.getPotholesByLocationRange(
             minLatitude, maxLatitude, minLongitude, maxLongitude
         )
-        return ApiResponse.success(potholes, "위치 기반 포트홀 검색 성공")
+        return ApiResponse.success(potholes)
     }
 
     @Operation(summary = "키워드 기반 포트홀 검색", description = "설명에 특정 키워드가 포함된 포트홀을 검색합니다.")
@@ -109,7 +109,7 @@ class PortholeController(
         @RequestParam keyword: String
     ): ApiResponse<List<PotholeResponse>> {
         val potholes = potholeService.searchPotholesByKeyword(keyword)
-        return ApiResponse.success(potholes, "키워드 검색 성공")
+        return ApiResponse.success(potholes)
     }
 
     @Operation(summary = "이미지가 있는 포트홀 조회", description = "이미지가 등록된 포트홀만 조회합니다.")
@@ -119,7 +119,7 @@ class PortholeController(
     @GetMapping("/with-images")
     fun getPotholesWithImages(): ApiResponse<List<PotholeResponse>> {
         val potholes = potholeService.getPotholesWithImage()
-        return ApiResponse.success(potholes, "이미지 포함 포트홀 조회 성공")
+        return ApiResponse.success(potholes)
     }
 
     @Operation(summary = "최근 등록된 포트홀 조회", description = "최근 등록된 포트홀 10개를 조회합니다.")
@@ -129,7 +129,7 @@ class PortholeController(
     @GetMapping("/recent")
     fun getRecentPotholes(): ApiResponse<List<PotholeResponse>> {
         val potholes = potholeService.getRecentPotholes()
-        return ApiResponse.success(potholes, "최근 포트홀 조회 성공")
+        return ApiResponse.success(potholes)
     }
 
     @Operation(summary = "포트홀 통계 조회", description = "전체 포트홀 개수를 조회합니다.")
@@ -140,6 +140,6 @@ class PortholeController(
     fun getPotholeStats(): ApiResponse<Map<String, Long>> {
         val totalCount = potholeService.getTotalPotholeCount()
         val stats = mapOf("totalCount" to totalCount)
-        return ApiResponse.success(stats, "포트홀 통계 조회 성공")
+        return ApiResponse.success(stats)
     }
 }
