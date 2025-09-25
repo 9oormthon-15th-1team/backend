@@ -4,6 +4,30 @@ spring:
   mvc:
     servlet:
       path: /api
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 30MB
+      enabled: true
+
+server:
+  port: 8080
+
+# 파일 업로드 설정 (S3 사용)
+app:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+    region: ap-northeast-2
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+
+# AWS 설정
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 management:
   server:
@@ -12,6 +36,6 @@ management:
 springdoc:
   api-docs:
     path: /api-docs
-    version: OPENAPI_3_0
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html

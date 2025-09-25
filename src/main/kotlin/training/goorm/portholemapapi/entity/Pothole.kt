@@ -17,10 +17,10 @@ class Pothole(
     val longitude: Double,
 
     @Column(nullable = false, length = 500)
-    val description: String,
+    var description: String,
 
     @Column(name = "image_url", length = 1000)
-    val imageUrl: String? = null,
+    var imageUrl: String? = null,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
