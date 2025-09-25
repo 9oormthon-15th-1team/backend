@@ -19,6 +19,9 @@ class Pothole(
     @Column(nullable = false, length = 500)
     val description: String,
 
+    @Column(name = "image_url", length = 1000)
+    val imageUrl: String? = null,
+
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 

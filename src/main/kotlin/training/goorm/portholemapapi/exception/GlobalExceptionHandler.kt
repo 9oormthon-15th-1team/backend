@@ -8,14 +8,36 @@ import training.goorm.portholemapapi.dto.ApiResponse
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
+    // 다형성을 활용한 generic 예외 처리
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleResourceNotFoundException(ex: ResourceNotFoundException): ApiResponse<Nothing> {
+        return ApiResponse.notFound("리소스를 찾을 수 없습니다")
+    }
+
+    @ExceptionHandler(ValidationException::class)
+    fun handleValidationException(ex: ValidationException): ApiResponse<Nothing> {
+        return ApiResponse.badRequest("입력 데이터가 올바르지 않습니다")
+    }
+
+    @ExceptionHandler(BusinessLogicException::class)
+    fun handleBusinessLogicException(ex: BusinessLogicException): ApiResponse<Nothing> {
+        return ApiResponse.badRequest("비즈니스 로직 오류가 발생했습니다")
+    }
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleBusinessException(ex: BusinessException): ApiResponse<Nothing> {
+        return ApiResponse.badRequest("요청을 처리할 수 없습니다")
+    }
+
+    // 기존 Spring 표준 예외들
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(ex: IllegalArgumentException): ApiResponse<Nothing> {
-        return ApiResponse.badRequest(ex.message ?: "잘못된 요청입니다")
+        return ApiResponse.badRequest("잘못된 요청입니다")
     }
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNoSuchElementException(ex: NoSuchElementException): ApiResponse<Nothing> {
-        return ApiResponse.notFound(ex.message ?: "리소스를 찾을 수 없습니다")
+        return ApiResponse.notFound("리소스를 찾을 수 없습니다")
     }
 
     @ExceptionHandler(NoHandlerFoundException::class)
