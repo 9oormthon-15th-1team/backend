@@ -85,11 +85,7 @@ class ReportService(
         val existingPothole = findOrCreatePothole(request.latitude, request.longitude, request.description)
 
         // address가 없을 경우 네이버 지오코딩으로 주소 생성
-        val address = if (request.address.isNullOrBlank()) {
-            naverGeocodingService.getAddressFromCoordinates(request.latitude, request.longitude)
-        } else {
-            request.address
-        }
+        val address = naverGeocodingService.getAddressFromCoordinates(request.latitude, request.longitude)
 
         val report = Report(
             latitude = request.latitude,
