@@ -20,17 +20,36 @@ class PortholeController(
     private val potholeService: PotholeService
 ) {
 
-    @Operation(summary = "포트홀 목록 조회", description = "등록된 포트홀 목록을 조회합니다.")
+    @Operation(summary = "포트홀 목록 조회", description = "등록된 포트홀 목록을 조회합니다. 위도와 경도를 제공하면 해당 위치로부터의 거리가 포함됩니다.")
     @GetMapping
-    fun getPotholes(): ApiResponse<List<PotholeResponse>> {
-        val potholes = potholeService.getAllPotholes()
+    fun getPotholes(
+        @Parameter(description = "기준 위도", example = "33.450208")
+        @RequestParam(required = false) latitude: Double?,
+        @Parameter(description = "기준 경도", example = "126.918355")
+        @RequestParam(required = false) longitude: Double?
+    ): ApiResponse<List<PotholeResponse>> {
+        val potholes = if (latitude != null && longitude != null) {
+            potholeService.getAllPotholesWithDistance(latitude, longitude)
+        } else {
+            potholeService.getAllPotholes()
+        }
         return ApiResponse.success(potholes)
     }
 
-    @Operation(summary = "포트홀 상세 조회", description = "특정 포트홀의 상세 정보를 조회합니다.")
+    @Operation(summary = "포트홀 상세 조회", description = "특정 포트홀의 상세 정보를 조회합니다. 위도와 경도를 제공하면 해당 위치로부터의 거리가 포함됩니다.")
     @GetMapping("/{id}")
-    fun getPothole(@PathVariable id: Long): ApiResponse<PotholeResponse> {
-        val pothole = potholeService.getPotholeById(id)
+    fun getPothole(
+        @PathVariable id: Long,
+        @Parameter(description = "기준 위도", example = "33.450208")
+        @RequestParam(required = false) latitude: Double?,
+        @Parameter(description = "기준 경도", example = "126.918355")
+        @RequestParam(required = false) longitude: Double?
+    ): ApiResponse<PotholeResponse> {
+        val pothole = if (latitude != null && longitude != null) {
+            potholeService.getPotholeByIdWithDistance(id, latitude, longitude)
+        } else {
+            potholeService.getPotholeById(id)
+        }
         return ApiResponse.success(pothole)
     }
 
