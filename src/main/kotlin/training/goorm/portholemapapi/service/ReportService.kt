@@ -8,15 +8,18 @@ import training.goorm.portholemapapi.dto.CreateReportMultipartRequest
 import training.goorm.portholemapapi.dto.CreateReportRequest
 import training.goorm.portholemapapi.dto.ReportResponse
 import training.goorm.portholemapapi.dto.UpdateReportRequest
+import training.goorm.portholemapapi.entity.Pothole
 import training.goorm.portholemapapi.entity.Report
 import training.goorm.portholemapapi.exception.ReportNotFoundException
+import training.goorm.portholemapapi.repository.PotholeRepository
 import training.goorm.portholemapapi.repository.ReportRepository
 import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
 class ReportService(
-    private val reportRepository: ReportRepository
+    private val reportRepository: ReportRepository,
+    private val potholeRepository: PotholeRepository
 ) {
 
     /**
@@ -78,12 +81,15 @@ class ReportService(
      */
     @Transactional
     fun createReport(request: CreateReportRequest): ReportResponse {
+        val existingPothole = findOrCreatePothole(request.latitude, request.longitude, request.description)
+
         val report = Report(
             latitude = request.latitude,
             longitude = request.longitude,
             address = request.address,
             imageUrls = request.imageUrls,
             description = request.description,
+            pothole = existingPothole,
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now()
         )
@@ -101,6 +107,8 @@ class ReportService(
         imageFiles: List<MultipartFile>,
         fileStorageService: FileStorageService
     ): ReportResponse {
+        val existingPothole = findOrCreatePothole(request.latitude, request.longitude, request.description)
+
         // 이미지 파일들을 저장하고 URL 목록 획득
         val imageUrls = fileStorageService.storeImageFiles(imageFiles)
 
@@ -113,6 +121,7 @@ class ReportService(
             address = address,
             imageUrls = imageUrls,
             description = request.description,
+            pothole = existingPothole,
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now()
         )
@@ -137,7 +146,8 @@ class ReportService(
             imageUrls = request.imageUrls ?: existingReport.imageUrls,
             description = request.description ?: existingReport.description,
             createdAt = existingReport.createdAt,
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
+            pothole = existingReport.pothole,
         )
 
         val savedReport = reportRepository.save(updatedReport)
@@ -167,5 +177,25 @@ class ReportService(
      */
     fun getTotalReportCount(): Long {
         return reportRepository.count()
+    }
+
+    /**
+     * 1m 반경 내 기존 포트홀을 찾거나 새로 생성
+     */
+    private fun findOrCreatePothole(latitude: Double, longitude: Double, description: String?): Pothole {
+        val nearbyPotholes = potholeRepository.findPotholesWithinRadius(latitude, longitude, 1.0)
+
+        return if (nearbyPotholes.isNotEmpty()) {
+            nearbyPotholes.first()
+        } else {
+            val newPothole = Pothole(
+                latitude = latitude,
+                longitude = longitude,
+                description = description ?: "새로 발견된 포트홀",
+                createdAt = LocalDateTime.now(),
+                updatedAt = LocalDateTime.now()
+            )
+            potholeRepository.save(newPothole)
+        }
     }
 }

@@ -39,4 +39,29 @@ interface PotholeRepository : JpaRepository<Pothole, Long> {
      * 최근 등록된 포트홀 목록 조회 (제한 개수)
      */
     fun findTop10ByOrderByCreatedAtDesc(): List<Pothole>
+
+    /**
+     * 지정된 좌표 주변 특정 반경 내의 포트홀 검색 (Haversine 공식 사용)
+     * @param latitude 기준 위도
+     * @param longitude 기준 경도
+     * @param radiusInMeters 검색 반경 (미터)
+     */
+    @Query("""
+        SELECT p FROM Pothole p
+        WHERE 6371000 * acos(
+            cos(radians(:latitude)) * cos(radians(p.latitude)) *
+            cos(radians(p.longitude) - radians(:longitude)) +
+            sin(radians(:latitude)) * sin(radians(p.latitude))
+        ) <= :radiusInMeters
+        ORDER BY 6371000 * acos(
+            cos(radians(:latitude)) * cos(radians(p.latitude)) *
+            cos(radians(p.longitude) - radians(:longitude)) +
+            sin(radians(:latitude)) * sin(radians(p.latitude))
+        )
+    """)
+    fun findPotholesWithinRadius(
+        @Param("latitude") latitude: Double,
+        @Param("longitude") longitude: Double,
+        @Param("radiusInMeters") radiusInMeters: Double
+    ): List<Pothole>
 }
