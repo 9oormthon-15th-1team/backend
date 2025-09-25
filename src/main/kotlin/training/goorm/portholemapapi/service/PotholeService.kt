@@ -97,18 +97,12 @@ class PotholeService(
         val existingPothole = potholeRepository.findByIdOrNull(id)
             ?: throw PotholeNotFoundException(id)
 
-        val updatedPothole = Pothole(
-            id = existingPothole.id,
-            latitude = existingPothole.latitude,
-            longitude = existingPothole.longitude,
-            description = request.description ?: existingPothole.description,
-            imageUrl = request.imageUrl ?: existingPothole.imageUrl,
-            createdAt = existingPothole.createdAt,
-            updatedAt = LocalDateTime.now()
-        )
+        existingPothole.description = request.description ?: existingPothole.description
+        existingPothole.imageUrl = request.imageUrl ?: existingPothole.imageUrl
+        existingPothole.updatedAt = LocalDateTime.now()
 
-        val savedPothole = potholeRepository.save(updatedPothole)
-        return PotholeResponse.from(savedPothole)
+        // No need to call save; JPA dirty checking will persist changes
+        return PotholeResponse.from(existingPothole)
     }
 
     /**
