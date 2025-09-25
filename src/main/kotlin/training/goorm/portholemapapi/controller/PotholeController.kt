@@ -59,20 +59,18 @@ class PortholeController(
         return ApiResponse.success()
     }
 
-    @Operation(summary = "위치 기반 포트홀 검색", description = "지정된 위도/경도 범위 내의 포트홀을 검색합니다.")
+    @Operation(summary = "위치 기반 포트홀 검색", description = "기준 좌표에서 지정된 거리 내의 포트홀을 거리순으로 검색합니다.")
     @GetMapping("/search/location")
     fun searchPotholesByLocation(
-        @Parameter(description = "최소 위도", example = "37.5000")
-        @RequestParam minLatitude: Double,
-        @Parameter(description = "최대 위도", example = "37.6000")
-        @RequestParam maxLatitude: Double,
-        @Parameter(description = "최소 경도", example = "126.9000")
-        @RequestParam minLongitude: Double,
-        @Parameter(description = "최대 경도", example = "127.0000")
-        @RequestParam maxLongitude: Double
+        @Parameter(description = "기준 위도", example = "37.5665")
+        @RequestParam latitude: Double,
+        @Parameter(description = "기준 경도", example = "126.9780")
+        @RequestParam longitude: Double,
+        @Parameter(description = "검색 반경 (미터)", example = "1000")
+        @RequestParam distance: Double
     ): ApiResponse<List<PotholeResponse>> {
-        val potholes = potholeService.getPotholesByLocationRange(
-            minLatitude, maxLatitude, minLongitude, maxLongitude
+        val potholes = potholeService.getPotholesWithinRadius(
+            latitude, longitude, distance
         )
         return ApiResponse.success(potholes)
     }
