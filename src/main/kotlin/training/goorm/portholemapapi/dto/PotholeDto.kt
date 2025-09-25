@@ -32,6 +32,9 @@ data class PotholeResponse(
     @Schema(description = "생성시각", example = "2025-09-25T15:30:00")
     val createdAt: LocalDateTime,
 
+    @Schema(description = "주소", example = "서울특별시 강남구 테헤란로 123")
+    val address: String? = null,
+
     @Schema(description = "요청 위치로부터의 거리 (미터)", example = "150.5")
     var distance: Double? = null
 ) {
@@ -45,7 +48,8 @@ data class PotholeResponse(
                 imageUrl = pothole.imageUrl,
                 imageUrls = imageUrls,
                 markerStatus = MarkerStatus.values().random(),
-                createdAt = pothole.createdAt
+                createdAt = pothole.createdAt,
+                address = pothole.address
             )
         }
     }
