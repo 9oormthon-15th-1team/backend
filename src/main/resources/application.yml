@@ -34,7 +34,7 @@ naver:
   geocoding:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}
-    url: https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc
+    url: https://maps.apigw.ntruss.com/map-reversegeocode/v2/gc
 
 management:
   server:
