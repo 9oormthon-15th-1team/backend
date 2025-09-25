@@ -26,7 +26,7 @@ data class ApiResponse<T>(
         }
 
         // 메시지만 있는 성공 응답 (data는 null)
-        fun success(message: String = ResultCode.SUCCESS.message): ApiResponse<Nothing> {
+        fun success(message: String = ResultCode.SUCCESS.message): ApiResponse<Unit> {
             return ApiResponse(
                 code = ResultCode.SUCCESS,
                 message = message,

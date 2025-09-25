@@ -73,7 +73,7 @@ class PortholeController(
         SwaggerApiResponse(responseCode = "404", description = "포트홀을 찾을 수 없음")
     ])
     @DeleteMapping("/{id}")
-    fun deletePothole(@PathVariable id: Long): ApiResponse<Void> {
+    fun deletePothole(@PathVariable id: Long): ApiResponse<Unit> {
         potholeService.deletePothole(id)
         return ApiResponse.success()
     }
