@@ -10,6 +10,7 @@ import training.goorm.portholemapapi.entity.Pothole
 import training.goorm.portholemapapi.exception.PotholeNotFoundException
 import training.goorm.portholemapapi.repository.PotholeRepository
 import java.time.LocalDateTime
+import kotlin.math.*
 
 @Service
 @Transactional(readOnly = true)
@@ -37,6 +38,15 @@ class PotholeService(
             ?: throw PotholeNotFoundException(id)
         val imageUrls = getImageUrlsForPothole(id)
         return PotholeResponse.from(pothole, imageUrls)
+    }
+
+    /**
+     * 거리와 함께 포트홀 상세 정보 조회
+     */
+    fun getPotholeByIdWithDistance(id: Long, latitude: Double, longitude: Double): PotholeResponse {
+        val response = getPotholeById(id)
+        response.distance = calculateDistance(latitude, longitude, response.latitude, response.longitude)
+        return response
     }
 
     /**
@@ -168,6 +178,42 @@ class PotholeService(
      */
     fun getTotalPotholeCount(): Long {
         return potholeRepository.count()
+    }
+
+    /**
+     * 거리와 함께 모든 포트홀 목록 조회
+     */
+    fun getAllPotholesWithDistance(latitude: Double, longitude: Double): List<PotholeResponse> {
+        return getAllPotholes()
+            .map { response ->
+                response.distance = calculateDistance(latitude, longitude, response.latitude, response.longitude)
+                response
+            }
+            .sortedBy { it.distance }
+    }
+
+    /**
+     * 두 지점 간의 거리를 계산 (Haversine 공식 사용)
+     * @param lat1 첫 번째 지점의 위도
+     * @param lon1 첫 번째 지점의 경도
+     * @param lat2 두 번째 지점의 위도
+     * @param lon2 두 번째 지점의 경도
+     * @return 거리 (미터)
+     */
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val earthRadius = 6371000.0 // 지구 반지름 (미터)
+
+        val lat1Rad = Math.toRadians(lat1)
+        val lat2Rad = Math.toRadians(lat2)
+        val deltaLatRad = Math.toRadians(lat2 - lat1)
+        val deltaLonRad = Math.toRadians(lon2 - lon1)
+
+        val a = sin(deltaLatRad / 2).pow(2) +
+                cos(lat1Rad) * cos(lat2Rad) *
+                sin(deltaLonRad / 2).pow(2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c
     }
 
     /**

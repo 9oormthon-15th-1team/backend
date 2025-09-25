@@ -30,7 +30,10 @@ data class PotholeResponse(
     val markerStatus: MarkerStatus,
 
     @Schema(description = "생성시각", example = "2025-09-25T15:30:00")
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+
+    @Schema(description = "요청 위치로부터의 거리 (미터)", example = "150.5")
+    var distance: Double? = null
 ) {
     companion object {
         fun from(pothole: Pothole, imageUrls: List<String> = emptyList()): PotholeResponse {
