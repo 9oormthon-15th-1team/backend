@@ -16,7 +16,8 @@ import kotlin.math.*
 @Transactional(readOnly = true)
 class PotholeService(
     private val potholeRepository: PotholeRepository,
-    private val reportRepository: training.goorm.portholemapapi.repository.ReportRepository
+    private val reportRepository: training.goorm.portholemapapi.repository.ReportRepository,
+    private val naverGeocodingService: NaverGeocodingService
 ) {
 
     /**
@@ -118,11 +119,19 @@ class PotholeService(
      */
     @Transactional
     fun createPothole(request: CreatePotholeRequest): PotholeResponse {
+        // 네이버 지오코딩 서비스를 통해 주소 가져오기
+        val address = try {
+            naverGeocodingService.getAddressFromCoordinates(request.latitude, request.longitude)
+        } catch (e: Exception) {
+            null
+        }
+
         val pothole = Pothole(
             latitude = request.latitude,
             longitude = request.longitude,
             description = request.description,
             imageUrl = request.imageUrl,
+            address = address,
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now()
         )
@@ -146,6 +155,7 @@ class PotholeService(
             longitude = existingPothole.longitude,
             description = request.description ?: existingPothole.description,
             imageUrl = request.imageUrl ?: existingPothole.imageUrl,
+            address = existingPothole.address,
             createdAt = existingPothole.createdAt,
             updatedAt = LocalDateTime.now()
         )

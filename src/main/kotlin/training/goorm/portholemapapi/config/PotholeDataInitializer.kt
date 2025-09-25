@@ -15,7 +15,8 @@ import java.time.LocalDateTime
 @Component
 class PotholeDataInitializer(
     private val potholeRepository: PotholeRepository,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val naverGeocodingService: training.goorm.portholemapapi.service.NaverGeocodingService
 ) {
 
     private val logger = LoggerFactory.getLogger(PotholeDataInitializer::class.java)
@@ -51,14 +52,26 @@ class PotholeDataInitializer(
             val potholeDataList: List<PotholeInitData> = objectMapper.readValue(resource.inputStream)
             logger.info("JSON에서 ${potholeDataList.size}개의 포트홀 데이터를 읽었습니다.")
 
-            // Pothole 엔티티로 변환하여 저장
+            // Pothole 엔티티로 변환하여 저장 (주소 정보 포함)
             val potholes = potholeDataList.mapIndexed { index, data ->
-                logger.debug("변환 중: ${index + 1}번째 포트홀 - 위치=(${data.latitude}, ${data.longitude})")
+                logger.info("변환 중: ${index + 1}번째 포트홀 - 위치=(${data.latitude}, ${data.longitude})")
+
+                // 네이버 지오코딩 서비스를 통해 주소 가져오기
+                val address = try {
+                    naverGeocodingService.getAddressFromCoordinates(data.latitude, data.longitude)
+                } catch (e: Exception) {
+                    logger.warn("지오코딩 실패 (${data.latitude}, ${data.longitude}): ${e.message}")
+                    null
+                }
+
+                logger.info("주소 조회 결과: $address")
+
                 Pothole(
                     latitude = data.latitude,
                     longitude = data.longitude,
                     description = data.description,
                     imageUrl = data.imageUrl,
+                    address = address,
                     createdAt = LocalDateTime.now(),
                     updatedAt = LocalDateTime.now()
                 )
