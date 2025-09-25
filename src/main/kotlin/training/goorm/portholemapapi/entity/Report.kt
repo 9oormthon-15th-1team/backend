@@ -34,6 +34,10 @@ class Report(
     @Column(length = 2000)
     val description: String? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pothole_id")
+    val pothole: Pothole,
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(),
