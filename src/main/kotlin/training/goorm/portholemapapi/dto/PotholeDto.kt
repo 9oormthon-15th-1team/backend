@@ -26,6 +26,9 @@ data class PotholeResponse(
     @Schema(description = "연관된 제보 이미지 URL 목록")
     val imageUrls: List<String>,
 
+    @Schema(description = "마커 상태")
+    val markerStatus: MarkerStatus,
+
     @Schema(description = "생성시각", example = "2025-09-25T15:30:00")
     val createdAt: LocalDateTime
 ) {
@@ -38,6 +41,7 @@ data class PotholeResponse(
                 description = pothole.description,
                 imageUrl = pothole.imageUrl,
                 imageUrls = imageUrls,
+                markerStatus = MarkerStatus.values().random(),
                 createdAt = pothole.createdAt
             )
         }
