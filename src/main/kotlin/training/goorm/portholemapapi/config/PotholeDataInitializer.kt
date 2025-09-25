@@ -36,17 +36,17 @@ class PotholeDataInitializer(
                 return
             }
 
-            logger.info("pothole.json 파일에서 초기 데이터를 로드합니다...")
+            logger.info("pothole_data.json 파일에서 초기 데이터를 로드합니다...")
 
-            // ClassPath에서 pothole.json 파일 읽기
-            val resource = ClassPathResource("data/pothole.json")
+            // ClassPath에서 pothole_data.json 파일 읽기
+            val resource = ClassPathResource("data/pothole_data.json")
 
             if (!resource.exists()) {
-                logger.error("pothole.json 파일을 찾을 수 없습니다!")
+                logger.error("pothole_data.json 파일을 찾을 수 없습니다!")
                 return
             }
 
-            logger.info("pothole.json 파일을 찾았습니다: ${resource.uri}")
+            logger.info("pothole_data.json 파일을 찾았습니다: ${resource.uri}")
 
             val potholeDataList: List<PotholeInitData> = objectMapper.readValue(resource.inputStream)
             logger.info("JSON에서 ${potholeDataList.size}개의 포트홀 데이터를 읽었습니다.")
