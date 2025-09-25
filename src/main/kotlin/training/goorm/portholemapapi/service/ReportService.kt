@@ -19,7 +19,8 @@ import java.time.LocalDateTime
 @Transactional(readOnly = true)
 class ReportService(
     private val reportRepository: ReportRepository,
-    private val potholeRepository: PotholeRepository
+    private val potholeRepository: PotholeRepository,
+    private val naverGeocodingService: NaverGeocodingService
 ) {
 
     /**
@@ -83,10 +84,13 @@ class ReportService(
     fun createReport(request: CreateReportRequest): ReportResponse {
         val existingPothole = findOrCreatePothole(request.latitude, request.longitude, request.description)
 
+        // address가 없을 경우 네이버 지오코딩으로 주소 생성
+        val address = naverGeocodingService.getAddressFromCoordinates(request.latitude, request.longitude)
+
         val report = Report(
             latitude = request.latitude,
             longitude = request.longitude,
-            address = request.address,
+            address = address,
             imageUrls = request.imageUrls,
             description = request.description,
             pothole = existingPothole,
@@ -112,8 +116,8 @@ class ReportService(
         // 이미지 파일들을 저장하고 URL 목록 획득
         val imageUrls = fileStorageService.storeImageFiles(imageFiles)
 
-        // 위도/경도로부터 주소 생성 (임시로 좌표 문자열 사용)
-        val address = "위도: ${request.latitude}, 경도: ${request.longitude}"
+        // 위도/경도로부터 주소 생성 (네이버 리버스 지오코딩 API 사용)
+        val address = naverGeocodingService.getAddressFromCoordinates(request.latitude, request.longitude)
 
         val report = Report(
             latitude = request.latitude,

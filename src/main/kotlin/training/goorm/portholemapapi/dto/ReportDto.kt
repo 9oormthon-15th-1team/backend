@@ -64,11 +64,6 @@ data class CreateReportRequest(
     @field:DecimalMax(value = "180.0", message = "경도는 180.0 이하여야 합니다")
     val longitude: Double,
 
-    @Schema(description = "주소", example = "서울특별시 중구 세종대로 110", required = true)
-    @field:NotBlank(message = "주소는 필수 입력값입니다")
-    @field:Size(max = 1000, message = "주소는 1000자 이하여야 합니다")
-    val address: String,
-
     @Schema(description = "이미지 URL 목록 (1장~6장)", example = "[\"https://example.com/image1.jpg\"]", required = true)
     @field:NotEmpty(message = "이미지는 최소 1장 이상 등록해야 합니다")
     @field:Size(min = 1, max = 6, message = "이미지는 1장에서 6장까지 등록 가능합니다")
