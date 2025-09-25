@@ -28,6 +28,13 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+    // AWS SDK 직접 버전 명시
+    implementation "software.amazon.awssdk:s3:${awsSdkVersion}"
+    implementation "software.amazon.awssdk:auth:${awsSdkVersion}"
+    implementation "software.amazon.awssdk:regions:${awsSdkVersion}"
+    implementation "software.amazon.awssdk:apache-client:${awsSdkVersion}"
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -55,4 +62,3 @@ tasks.named('test') {
 tasks.named('jar') {
     enabled = false
 }
-
