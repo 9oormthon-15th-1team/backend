@@ -4,20 +4,6 @@ spring:
   mvc:
     servlet:
       path: /api
-  profiles:
-    active: dev
-
-# CORS 설정을 위한 사용자 정의 속성
-cors:
-  allowed-origins:
-    dev:
-      - "http://localhost*"
-      - "https://localhost*"
-      - "http://127.0.0.1*"
-      - "https://127.0.0.1*"
-    prod:
-      - "https://yourdomain.com"
-      - "https://www.yourdomain.com"
 
 management:
   server:
@@ -26,28 +12,6 @@ management:
 springdoc:
   api-docs:
     path: /api-docs
+    version: OPENAPI_3_0
   swagger-ui:
     path: /swagger-ui.html
-
----
-# 개발 환경 프로필
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-logging:
-  level:
-    training.goorm.portholemapapi: DEBUG
-
----
-# 프로덕션 환경 프로필
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-logging:
-  level:
-    root: WARN
-    training.goorm.portholemapapi: INFO
