@@ -21,6 +21,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    awsSdkVersion = '2.28.15'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
