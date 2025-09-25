@@ -14,7 +14,8 @@ import java.time.LocalDateTime
 @Service
 @Transactional(readOnly = true)
 class PotholeService(
-    private val potholeRepository: PotholeRepository
+    private val potholeRepository: PotholeRepository,
+    private val reportRepository: training.goorm.portholemapapi.repository.ReportRepository
 ) {
 
     /**
@@ -22,7 +23,10 @@ class PotholeService(
      */
     fun getAllPotholes(): List<PotholeResponse> {
         return potholeRepository.findAll()
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -31,7 +35,8 @@ class PotholeService(
     fun getPotholeById(id: Long): PotholeResponse {
         val pothole = potholeRepository.findByIdOrNull(id)
             ?: throw PotholeNotFoundException(id)
-        return PotholeResponse.from(pothole)
+        val imageUrls = getImageUrlsForPothole(id)
+        return PotholeResponse.from(pothole, imageUrls)
     }
 
     /**
@@ -44,7 +49,10 @@ class PotholeService(
         maxLongitude: Double
     ): List<PotholeResponse> {
         return potholeRepository.findByLocationRange(minLatitude, maxLatitude, minLongitude, maxLongitude)
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -56,7 +64,10 @@ class PotholeService(
         radiusInMeters: Double
     ): List<PotholeResponse> {
         return potholeRepository.findPotholesWithinRadius(latitude, longitude, radiusInMeters)
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -64,7 +75,10 @@ class PotholeService(
      */
     fun searchPotholesByKeyword(keyword: String): List<PotholeResponse> {
         return potholeRepository.findByDescriptionContainingIgnoreCase(keyword)
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -72,7 +86,10 @@ class PotholeService(
      */
     fun getPotholesWithImage(): List<PotholeResponse> {
         return potholeRepository.findByImageUrlIsNotNull()
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -80,7 +97,10 @@ class PotholeService(
      */
     fun getRecentPotholes(): List<PotholeResponse> {
         return potholeRepository.findTop10ByOrderByCreatedAtDesc()
-            .map { PotholeResponse.from(it) }
+            .map { pothole ->
+                val imageUrls = getImageUrlsForPothole(pothole.id!!)
+                PotholeResponse.from(pothole, imageUrls)
+            }
     }
 
     /**
@@ -98,7 +118,8 @@ class PotholeService(
         )
 
         val savedPothole = potholeRepository.save(pothole)
-        return PotholeResponse.from(savedPothole)
+        val imageUrls = getImageUrlsForPothole(savedPothole.id!!)
+        return PotholeResponse.from(savedPothole, imageUrls)
     }
 
     /**
@@ -120,7 +141,8 @@ class PotholeService(
         )
 
         val savedPothole = potholeRepository.save(updatedPothole)
-        return PotholeResponse.from(savedPothole)
+        val imageUrls = getImageUrlsForPothole(savedPothole.id!!)
+        return PotholeResponse.from(savedPothole, imageUrls)
     }
 
     /**
@@ -146,5 +168,13 @@ class PotholeService(
      */
     fun getTotalPotholeCount(): Long {
         return potholeRepository.count()
+    }
+
+    /**
+     * 특정 포트홀에 연관된 제보들의 모든 이미지 URL을 가져옴
+     */
+    private fun getImageUrlsForPothole(potholeId: Long): List<String> {
+        return reportRepository.findByPotholeId(potholeId)
+            .flatMap { it.imageUrls }
     }
 }

@@ -44,4 +44,9 @@ interface ReportRepository : JpaRepository<Report, Long> {
      * 생성일 기준 정렬된 전체 제보 목록
      */
     fun findAllByOrderByCreatedAtDesc(): List<Report>
+
+    /**
+     * 특정 포트홀에 연결된 제보 목록 조회
+     */
+    fun findByPotholeId(potholeId: Long): List<Report>
 }
