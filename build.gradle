@@ -9,7 +9,7 @@ plugins {
 
 group = 'training.goorm'
 version = '0.0.1-SNAPSHOT'
-description = 'portholemap-api'
+description = 'potholemap-api'
 
 java {
     toolchain {
