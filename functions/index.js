@@ -6,6 +6,28 @@ admin.initializeApp();
 
 // Firestore 참조
 const db = admin.firestore();
+// ===== REST (HTTP) API with Express) =====
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(cors()); // TODO: restrict origins for production
+app.use(bodyParser.json());
+
+const pothole = require('./pothole');
+app.use('/api', pothole.api);
+exports.createPothole = pothole.createPothole;
+exports.listPotholes = pothole.listPotholes;
+exports.getPothole = pothole.getPothole;
+exports.updatePothole = pothole.updatePothole;
+exports.deletePothole = pothole.deletePothole;
+
+// (Optional) simple health check
+app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Export the Express app as an HTTPS function
+exports.api = functions.https.onRequest(app);
 
 // HTTP 트리거 함수 예제
 exports.helloWorld = functions.https.onRequest((req, res) => {
