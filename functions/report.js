@@ -8,9 +8,10 @@ if (!admin.apps.length) {
 }
 
 const router = express.Router();
-const db = admin.firestore();
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const db = getFirestore();
 const bucket = admin.storage().bucket();
-const serverTS = admin.firestore.FieldValue.serverTimestamp;
+const serverTS = () => FieldValue.serverTimestamp();
 
 // ===== Firestore helpers =====
 const col = (name) => db.collection(name);

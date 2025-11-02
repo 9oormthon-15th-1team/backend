@@ -1,0 +1,29 @@
+### ✅ Create a pothole
+POST http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1/api/potholes
+Content-Type: application/json
+
+{
+  "title": "도로 파손 테스트",
+  "description": "도로에 구멍이 생겼습니다.",
+  "latitude": 37.5665,
+  "longitude": 126.9780,
+  "imageUrls": []
+}
+
+### ✅ List potholes
+GET http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1/api/api/potholes
+
+### ✅ Get single pothole
+GET http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1//api/potholes/{{potholeId}}
+
+### ✅ Update pothole
+PATCH http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1/api/potholes/{{potholeId}}
+Content-Type: application/json
+
+{
+  "description": "보수 완료",
+  "status": "RESOLVED"
+}
+
+### ✅ Delete pothole
+DELETE http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1/api/potholes/{{potholeId}}

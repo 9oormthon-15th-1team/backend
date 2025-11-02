@@ -1,0 +1,4 @@
+### ✅ Health check (Firebase Functions / Express API)
+GET http://localhost:5001/{{YOUR_PROJECT_ID}}/us-central1/api/health
+Accept: application/json
+

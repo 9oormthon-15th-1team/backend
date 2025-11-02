@@ -1,8 +1,7 @@
-
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
 if (!admin.apps.length) {
   // Safe-guard: initialize only if not already initialized by index.js
@@ -10,8 +9,8 @@ if (!admin.apps.length) {
 }
 
 const router = express.Router();
-const db = admin.firestore();
-const serverTS = admin.firestore.FieldValue.serverTimestamp;
+const db = getFirestore();
+const serverTS = () => FieldValue.serverTimestamp();
 
 // ===== Firestore helpers =====
 const col = (name) => db.collection(name);
@@ -50,7 +49,7 @@ async function deleteDoc(collection, id) {
 
 // ===== Express routes (HTTP) =====
 // NOTE: index.js does `app.use('/api', pothole.api)` so these mount under `/api`
-router.post('/potholes', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { title = '', description = '', latitude, longitude, imageUrls = [] } = req.body || {};
     if (typeof title !== 'string' || typeof description !== 'string') {
@@ -73,7 +72,7 @@ router.post('/potholes', async (req, res) => {
   }
 });
 
-router.get('/potholes', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const limit = Number(req.query.limit || 20);
     const items = await listDocs('potholes', { limit });
@@ -84,9 +83,9 @@ router.get('/potholes', async (req, res) => {
   }
 });
 
-router.get('/potholes/:id', async (req, res) => {
+router.get('/:potholeId', async (req, res) => {
   try {
-    const item = await getDoc('potholes', req.params.id);
+    const item = await getDoc('potholes', req.params.potholeId);
     if (!item) return res.sendStatus(404);
     res.json(item);
   } catch (e) {
@@ -95,9 +94,9 @@ router.get('/potholes/:id', async (req, res) => {
   }
 });
 
-router.patch('/potholes/:id', async (req, res) => {
+router.patch('/:potholeId', async (req, res) => {
   try {
-    const updated = await updateDoc('potholes', req.params.id, req.body || {});
+    const updated = await updateDoc('potholes', req.params.potholeId, req.body || {});
     res.json(updated);
   } catch (e) {
     console.error(e);
@@ -105,9 +104,9 @@ router.patch('/potholes/:id', async (req, res) => {
   }
 });
 
-router.delete('/potholes/:id', async (req, res) => {
+router.delete('/:potholeId', async (req, res) => {
   try {
-    await deleteDoc('potholes', req.params.id);
+    await deleteDoc('potholes', req.params.potholeId);
     res.sendStatus(204);
   } catch (e) {
     console.error(e);

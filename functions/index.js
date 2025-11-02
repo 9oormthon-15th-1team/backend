@@ -16,12 +16,24 @@ app.use(cors()); // TODO: restrict origins for production
 app.use(bodyParser.json());
 
 const pothole = require('./pothole');
+const storage = require('./storage');
+
 app.use('/api', pothole.api);
+app.use('/api/storage', storage.api);
+
 exports.createPothole = pothole.createPothole;
 exports.listPotholes = pothole.listPotholes;
 exports.getPothole = pothole.getPothole;
 exports.updatePothole = pothole.updatePothole;
 exports.deletePothole = pothole.deletePothole;
+
+// Storage functions
+exports.onFileUpload = storage.onFileUpload;
+exports.onFileDelete = storage.onFileDelete;
+exports.getUploadUrl = storage.getUploadUrl;
+exports.getDownloadUrl = storage.getDownloadUrl;
+exports.listUserFiles = storage.listUserFiles;
+exports.deleteFile = storage.deleteFile;
 
 // (Optional) simple health check
 app.get('/health', (_req, res) => res.json({ ok: true }));
@@ -149,23 +161,7 @@ exports.scheduledFunction = functions.pubsub
     return null;
   });
 
-// Storage 트리거 함수 예제
-exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
-  const filePath = object.name;
-  const contentType = object.contentType;
-  const bucket = admin.storage().bucket(object.bucket);
-  
-  console.log(`File uploaded: ${filePath}`);
-  console.log(`Content Type: ${contentType}`);
-  
-  // 이미지 처리 예제
-  if (contentType && contentType.startsWith('image/')) {
-    // 썸네일 생성 등의 작업 수행
-    console.log('Processing image...');
-  }
-  
-  return null;
-});
+// Storage 트리거 함수는 storage.js 모듈에서 처리
 
 // PubSub 트리거 함수 예제
 exports.processPubSubMessage = functions.pubsub
